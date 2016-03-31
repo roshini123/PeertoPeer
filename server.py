@@ -2,8 +2,9 @@ import socket
 import threading
 import os
 
-peer_list = []
-rfc_list = []
+peers = []
+rfcs = []
+global counter
 
  class PeerList:
         def __init__(self,hostName="None",port):
@@ -21,7 +22,28 @@ rfc_list = []
                 threading.Thread.__init__(self)
                 self.client=client
                 self.addr=addr
+		self.count=0
+
+	def run(self):
+		message=self.client.recv(2048)
+		if(self.count==0)
+			count++
+			addPeer(message)
+		datasplit=shlex.split(message)
+		req=datasplit[0]
+		if req=="ADD":
+			titlesplit=message.rsplit('Title:',1)
+			title=titlesplit[1].rsplit('ADD',1)
+			rfcs.insert(0,RFCList(datasplit[2], title[0], datasplit[5]))
+
+
 		
+ def addPeer(message)
+	global counter
+	counter=counter+1
+	datalist=shlex.split(message)
+	peers.insert(0,peerList(datalist[5],datalist[7])
+		 
 
  if __name__ == "__main__"
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
