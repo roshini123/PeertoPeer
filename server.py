@@ -32,14 +32,19 @@ class PeerThread(threading.Thread):
                 self.client=client
                 self.addr=addr
 		self.count=0
-
+		self.hostName="None"
+	def sethostName(self,name):
+		self.hostName=name
+		
 	def run(self):
-		message=self.client.recv(2048)
+	    message=self.client.recv(2048)
+	    if(len(message)!=0)
 		datasplit=shlex.split(message)
 		global counter 
 		index=0
 		if self.count==0:
 			self.count=self.count+1
+			self.sethostName(datasplit[5])
 			peers.insert(0,peerList(datasplit[5],int(datasplit[7])))
 			counter=counter+1
 
@@ -75,13 +80,22 @@ class PeerThread(threading.Thread):
 	
 		if req=="LIST":
 			response="P2P-CI/1.0 200 OK"+"\n"
+			host=datasplit[4]
+			port=datasplit[6]
 			for x in range(0,len(rfcs)):
-				host=rfcs[x].hostName
-				for y in range(0,len(peers)):
-					port=peers[y].getPort(host)
+				if rfcs[x].hostName==host:
 					response=response+"RFC "+rfcs[x].getrfcNumber+" "+rfcs[x].title	+" "+host+" "+port+"\n"	
 					break
-			 
+	    else
+		for(x in range(0,len(peers)):
+			if peers[x].hostName==self.hostName:
+				peers.remove(peers[x])
+			break
+		for(x in range(0,len(rfcs)):
+			if rfcs[x].hostName==self.hostName:
+				rfcs.remove(rfcs[x])
+			
+					 
 	
 if __name__ == "__main__":
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
