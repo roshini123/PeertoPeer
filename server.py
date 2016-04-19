@@ -52,6 +52,8 @@ class PeerThread(threading.Thread):
 				if datasplit[0]=='LIST':
 					self.sethostName(datasplit[4])
 					peers.insert(0,PeerList(datasplit[4],int(datasplit[6])))
+				elif datasplit[0]=='END':
+					continue
 				else:
 					self.sethostName(datasplit[5])
 					peers.insert(0,PeerList(datasplit[5],int(datasplit[7])))
@@ -92,6 +94,10 @@ class PeerThread(threading.Thread):
 						if(rfcs[x].hostName==peers[y].hostName):
 							response=response+"RFC "+rfcs[x].rfcNumber+" "+rfcs[x].title	+" "+rfcs[x].hostName+" "+str(peers[y].port)+"\n"	
 				self.client.send(response)
+			elif req=="END":
+				host=datasplit[3]
+				port=datasplit[5]
+				print host+str(port)
 			else:
 				response="P2P-CI/1.0 400 Bad Request"
 				self.client.send(response) 
@@ -111,7 +117,7 @@ class PeerThread(threading.Thread):
 	
 if __name__ == "__main__":
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host = '127.0.0.1'
+        host = '127.0.0.4'
         port = 7745
         s.bind ((host,port))
         s.listen(10)

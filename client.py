@@ -18,7 +18,8 @@ class client_to_serv_comm(threading.Thread):
 	
 	def run(self):
 		self.client_to_server.connect((self.server_ip,self.download_port))
-		while True:
+		con=1
+		while con==1:
 			print("\n1.Add RFC\n2.LOOKUP RFC\n3.LISTALL RFCs\n4.Exit\n Enter your choice")
 			choice=int(input())	
 			if choice==1:
@@ -52,7 +53,9 @@ class client_to_serv_comm(threading.Thread):
 						port=int(input())
 						download_request='GET RFC '+rfcnumber+' P2P-CI/1.0\nHost: '+str(self.ctos_name)+'\nOS: '+platform.platform()+'\n'
 						new_rfc_sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+						print "done before connect" 
 						new_rfc_sock.connect((host,port))
+						print "done after connect"
 						new_rfc_sock.send(download_request)
 						filnam='recvfiles/RFC'+rfcnumber+'.txt'
 						data=''
@@ -76,8 +79,10 @@ class client_to_serv_comm(threading.Thread):
 				else:
 					print(list_reply)
 			elif choice==4:
+				end_request='END P2P-CI/1.0\nHost: '+self.ctos_name+'\nPort: '+str(self.upload_port)+'\n'
+				self.client_to_server.send(end_request)
 				self.client_to_server.close()
-				break
+				con=0
 			else:
 				print("wrong choice")
 
@@ -90,9 +95,11 @@ class client_to_client_comm(threading.Thread):
 		threading.Thread.__init__(self)
 
 	def run(self):
-		c,addr = self.client_to_client.accept()
-		peer_conn=peer_to_download(c,addr)
-		peer_conn.start()
+		while True:
+			c,addr = self.client_to_client.accept()
+			print "accepting done"
+			peer_conn=peer_to_download(c,addr)
+			peer_conn.start()
 
 class peer_to_download(threading.Thread):
 	def __init__(self,peer_obj, peer_addr):
@@ -126,7 +133,7 @@ class peer_to_download(threading.Thread):
 				
 if __name__=="__main__":
 	download_port=7745
-	server_ip='127.0.0.1'
+	server_ip='127.0.0.4'
 	print("enter the upload port number: ")
 	upload_port=int(input())
 	print("enter the ip-address of the host:")
