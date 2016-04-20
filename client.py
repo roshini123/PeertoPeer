@@ -4,7 +4,7 @@ import time
 import platform
 import threading
 import shlex
-
+from datetime import *
 class client_to_serv_comm(threading.Thread):
 	def __init__(self,upload_port,download_port,server_ip,client_to_server,ctos_name):
 		threading.Thread.__init__(self)
@@ -112,13 +112,20 @@ class peer_to_download(threading.Thread):
 		message=self.peer_obj.recv(2048)
 		if(len(message)!=0):
 			datasplit=shlex.split(message)
+			filename='RFCList/'+datasplit[1]+datasplit[2]+'.txt'
+			try:
+    				mtime = os.path.getmtime(filename)
+			except OSError:
+    				mtime = 0
+				last_modified_date = datetime.fromtimestamp(mtime)	
+				size=os.path.getsize(filename)
 			if datasplit[3]!='P2P-CI/1.0':
-				reply_message='P2P-CI/1.0 505 P2P-CI Version Not Supported\n'+'Date: '+time.asctime()+'\nOS: '+platform.platform()+'\nLast Modified:\nContent Length:\nContent Type: text/text\n'
+				reply_message='P2P-CI/1.0 505 P2P-CI Version Not Supported\n'+'Date: '+time.asctime()+'\nOS: '+platform.platform()+'\nLast Modified:'+str(last_modified_date)+'\nContent Length:'+str(size)+'\nContent Type: text/text\n'
 			elif datasplit[0]!='GET':
-				reply_message='P2P-CI/1.0 400 Bad Request\n'+'Date: '+time.asctime()+'\nOS: '+platform.platform()+'\nLast Modified:\nContent Length:\nContent Type: text/text\n'
+				reply_message='P2P-CI/1.0 400 Bad Request\n'+'Date: '+time.asctime()+'\nOS: '+platform.platform()+'\nLast Modified:'+str(last_modified_date)+'\nContent Length:'+str(size)+'\nContent Type: text/text\n'
 			else:
-				reply_message='P2P-CI/1.0 200 OK\n'+'Date: '+time.asctime()+'\nOS: '+platform.platform()+'\nLast Modified:\nContent Length:\nContent Type: text/text\n'
-				filename='RFCList/'+datasplit[1]+datasplit[2]+'.txt'
+				reply_message='P2P-CI/1.0 200 OK\n'+'Date: '+time.asctime()+'\nOS: '+platform.platform()+'\nLast Modified:'+str(last_modified_date)+'\nContent Length:'+str(size)+'\nContent Type: text/text\n'
+
 				try:
 					f=open(filename,'rb')
 					l=f.read(1024)
@@ -129,12 +136,11 @@ class peer_to_download(threading.Thread):
 				except:
 					reply_file='////the content is empty as the requested file does not exist on the requested peer'
 				self.peer_obj.send(reply_message)
-		#		self.peer_obj.send(reply_file)
 				self.peer_obj.close()
 				
 if __name__=="__main__":
 	download_port=7745
-	server_ip='127.0.0.87'
+	server_ip='127.0.0.88'
 	print("enter the upload port number: ")
 	upload_port=int(input())
 	print("enter the ip-address of the host:")

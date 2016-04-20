@@ -120,7 +120,7 @@ class PeerThread(threading.Thread):
 	
 if __name__ == "__main__":
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host = '127.0.0.87'
+        host = '127.0.0.88'
         port = 7745
         s.bind ((host,port))
         s.listen(10)
