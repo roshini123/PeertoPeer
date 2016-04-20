@@ -53,7 +53,7 @@ class PeerThread(threading.Thread):
 					self.sethostName(datasplit[4])
 					peers.insert(0,PeerList(datasplit[4],int(datasplit[6])))
 				elif datasplit[0]=='END':
-					continue
+					print 'end is printed'+datasplit[3]
 				else:
 					self.sethostName(datasplit[5])
 					peers.insert(0,PeerList(datasplit[5],int(datasplit[7])))
@@ -98,26 +98,29 @@ class PeerThread(threading.Thread):
 				host=datasplit[3]
 				port=datasplit[5]
 				print host+str(port)
+				response="P2P-CI/1.0 200 OK TO CLOSE"+"\n"+str(len(peers))+str(len(rfcs))
+				for x in range(0,len(peers)):
+					if host==peers[x].hostName:
+						peers.remove(peers[x])
+						break
+				for x in range(0,len(rfcs)):
+					if host==rfcs[x].hostName:
+						rfcs.remove(rfcs[x])
+						print x
+				self.client.send(response+host+str(port)+str(len(peers))+str(len(rfcs)))
+						
 			else:
 				response="P2P-CI/1.0 400 Bad Request"
 				self.client.send(response) 
 	  else:
 			con=1
-
-	  for x in range(0,len(peers)):
-		if peers[x].hostName==self.hostName:
-			peers.remove(peers[x])
-			break
-	  for x in range(0,len(rfcs)):
-		if rfcs[x].hostName==self.hostName:
-			rfcs.remove(rfcs[x])
 		
 	  self.client.close()		
 					 
 	
 if __name__ == "__main__":
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host = '127.0.0.4'
+        host = '127.0.0.87'
         port = 7745
         s.bind ((host,port))
         s.listen(10)

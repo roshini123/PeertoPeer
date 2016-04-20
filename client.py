@@ -79,13 +79,14 @@ class client_to_serv_comm(threading.Thread):
 				else:
 					print(list_reply)
 			elif choice==4:
+				con=0
 				end_request='END P2P-CI/1.0\nHost: '+self.ctos_name+'\nPort: '+str(self.upload_port)+'\n'
 				self.client_to_server.send(end_request)
-				self.client_to_server.close()
-				con=0
+				end_reply=self.client_to_server.recv(1024)
+				print end_reply	
 			else:
 				print("wrong choice")
-
+		self.client_to_server.close()
 
 	
 class client_to_client_comm(threading.Thread):
@@ -133,7 +134,7 @@ class peer_to_download(threading.Thread):
 				
 if __name__=="__main__":
 	download_port=7745
-	server_ip='127.0.0.4'
+	server_ip='127.0.0.87'
 	print("enter the upload port number: ")
 	upload_port=int(input())
 	print("enter the ip-address of the host:")
