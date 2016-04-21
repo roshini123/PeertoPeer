@@ -14,7 +14,6 @@ class client_to_serv_comm(threading.Thread):
 		self.client_to_server=client_to_server
 		self.ctos_name=ctos_name
 
-	#	self.start()
 	
 	def run(self):
 
@@ -98,7 +97,6 @@ class client_to_client_comm(threading.Thread):
 	def run(self):
 		while True:
 			c,addr = self.client_to_client.accept()
-			print "accepting done"
 			peer_conn=peer_to_download(c,addr)
 			peer_conn.start()
 
@@ -140,7 +138,6 @@ if __name__=="__main__":
 	client_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	client_to_server.connect((server_ip,download_port))
 	ctos_name=client_to_server.recv(1024)
-	print ctos_name+"is the name"
 	c=client_to_serv_comm(upload_port,download_port,server_ip,client_to_server,ctos_name)
 	
 	c.start()

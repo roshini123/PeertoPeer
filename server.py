@@ -42,7 +42,6 @@ class PeerThread(threading.Thread):
 	  con=0
 	  while(con==0):
 		message=self.client.recv(2048)
-		print(message+'\n')	    	
 		if(len(message)!=0):
 			datasplit=shlex.split(message)
 			global counter
@@ -97,7 +96,6 @@ class PeerThread(threading.Thread):
 			elif req=="END":
 				host=datasplit[3]
 				port=datasplit[5]
-				print host+str(port)
 				response="P2P-CI/1.0 200 OK TO CLOSE"+"\n"+str(len(peers))+str(len(rfcs))
 				for x in range(0,len(peers)):
 					if host==peers[x].hostName:
@@ -106,7 +104,6 @@ class PeerThread(threading.Thread):
 				for x in range(0,len(rfcs)):
 					if host==rfcs[x].hostName:
 						rfcs.remove(rfcs[x])
-						print x
 				self.client.send(response+host+str(port)+str(len(peers))+str(len(rfcs)))
 						
 			else:
@@ -126,7 +123,6 @@ if __name__ == "__main__":
         s.listen(10)
         while True:
                 c,addr = s.accept()
-		print addr[0]
 		c.send(addr[0])
 		peer=PeerThread(c, addr)
                 peer.start()	
