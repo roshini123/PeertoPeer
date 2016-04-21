@@ -120,12 +120,14 @@ class PeerThread(threading.Thread):
 	
 if __name__ == "__main__":
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host = '127.0.0.88'
-        port = 7745
+        host = '192.168.102.140'
+        port = 7737
         s.bind ((host,port))
         s.listen(10)
         while True:
                 c,addr = s.accept()
+		print addr[0]
+		c.send(addr[0])
 		peer=PeerThread(c, addr)
                 peer.start()	
 	s.close()
